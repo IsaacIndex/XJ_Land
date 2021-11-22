@@ -3,7 +3,7 @@ const ctx = canvas.getContext("2d")
 const con = document.getElementById("console")
 
 var background = new Image();
-background.src = "images/temple.jpg"
+background.src = "medias/temple.jpg"
 function drawBackground(){
     ctx.drawImage(background,0,0, canvas.width, canvas.height);  
 }
@@ -11,13 +11,13 @@ background.onload = function(){
     drawBackground() 
 }
 const batman = new Image()
-batman.src = "images/batman.png"
+batman.src = "medias/batman.png"
 const mummy = new Image()
-mummy.src = "images/mummy.png"
+mummy.src = "medias/mummy.png"
 damageImages = []
 for (let i=0; i<10; i++){
     damageImages[i] = new Image()
-    damageImages[i].src = "images/damages/"+i+".PNG"
+    damageImages[i].src = "medias/damages/"+i+".PNG"
 }
 
 canvas.width = innerWidth;
@@ -147,6 +147,21 @@ const projectiles = []
 const particles = []
 const damages = []
 
+function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    }
+    this.stop = function(){
+        this.sound.pause();
+    }    
+}
+damageSound = new sound("medias/damage.mp3")
 
 function animate(){
     requestAnimationFrame(animate)
@@ -176,6 +191,7 @@ function animate(){
         
         // When hit
 	    if (projectile.x > canvas.width - size && projectile.y > canvas.height - size){
+            damageSound.play()
             enemy.takeDamage()
             for(let i = 0; i < 8; i++){
                 particles.push(new Particle(projectile.x, projectile.y, Math.random() * size/45, projectile.color, {x: Math.random() - 0.5, y: Math.random() - 0.5}))
