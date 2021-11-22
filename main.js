@@ -175,7 +175,7 @@ function animate(){
         projectile.update()
         
         // When hit
-	    if (projectile.x > canvas.width - size){
+	    if (projectile.x > canvas.width - size && projectile.y > canvas.height - size){
             enemy.takeDamage()
             for(let i = 0; i < 8; i++){
                 particles.push(new Particle(projectile.x, projectile.y, Math.random() * size/45, projectile.color, {x: Math.random() - 0.5, y: Math.random() - 0.5}))
