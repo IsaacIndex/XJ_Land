@@ -9,7 +9,7 @@ mummy.src = "images/mummy.png"
 damageImages = []
 for (let i=0; i<10; i++){
     damageImages[i] = new Image()
-    damageImages[i].src = "images/damages/"+i+".png"
+    damageImages[i].src = "images/damages/"+i+".PNG"
 }
 
 canvas.width = innerWidth;
