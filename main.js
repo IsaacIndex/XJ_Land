@@ -140,7 +140,7 @@ const damages = []
 
 function animate(){
     requestAnimationFrame(animate)
-	ctx.fillStyle = 'rgba(0,0,0,0.1)'
+	ctx.fillStyle = 'rgba(0,0,0,0.5)'
 	ctx.fillRect(0, 0, canvas.width, canvas.height)
     hero.draw()
 	enemy.draw()
