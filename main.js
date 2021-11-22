@@ -1,6 +1,6 @@
 const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext("2d")
-const con = document.getElementByID("console")
+const con = document.getElementById("console")
 
 canvas.width = innerWidth;
 canvas.height = innerHeight;
@@ -61,12 +61,12 @@ function animate(){
     })
 }
 
-addEventListener('click', (e)=>{
-	con.innerHTML = "test"
+addEventListener('touchstart', (e)=>{
+	con.innerHTML = e
 	const angle = Math.atan2(e.originalEvent.touches[0].pageX - hero.y, e.originalEvent.touches[0].pageY  - hero.x)
 	const velocity = {x: Math.cos(angle), y: Math.sin(angle)}
 	projectiles.push(new Projectile(hero.x, hero.y, 5, 'red', velocity))
 })
 
-con.innerHTML = "start"
+
 animate()
