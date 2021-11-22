@@ -1,5 +1,6 @@
 const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext("2d")
+const con = document.getElementByID("console")
 
 canvas.width = innerWidth;
 canvas.height = innerHeight;
@@ -38,8 +39,8 @@ class Projectile {
 
     update(){
         this.draw()
-        this.x = this.x + this.velocity.x
-        this.y = this.y + this.velocity.y
+        this.x = this.x + this.velocity.x * 3
+        this.y = this.y + this.velocity.y * 3
     }
 }
 
@@ -61,9 +62,11 @@ function animate(){
 }
 
 addEventListener('click', (e)=>{
-    const angle = Math.atan2(e.clientY - hero.x, e.clientX - hero.y)
-    const velocity = {x: Math.cos(angle), y: Math.sin(angle)}
-    projectiles.push(new Projectile(hero.x, hero.y, 5, 'red', velocity))
+	con.innerHTML = "test"
+	const angle = Math.atan2(e.originalEvent.touches[0].pageX - hero.y, e.originalEvent.touches[0].pageY  - hero.x)
+	const velocity = {x: Math.cos(angle), y: Math.sin(angle)}
+	projectiles.push(new Projectile(hero.x, hero.y, 5, 'red', velocity))
 })
 
+con.innerHTML = "start"
 animate()
