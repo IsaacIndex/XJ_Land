@@ -2,6 +2,14 @@ const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext("2d")
 const con = document.getElementById("console")
 
+var background = new Image();
+background.src = "images/temple.jpg"
+function drawBackground(){
+    ctx.drawImage(background,0,0, canvas.width, canvas.height);  
+}
+background.onload = function(){
+    drawBackground() 
+}
 const batman = new Image()
 batman.src = "images/batman.png"
 const mummy = new Image()
@@ -24,11 +32,7 @@ class Hero {
     }
 
     draw(){
-	ctx.drawImage(batman, this.x - size / 2, this.y - size / 2, size, size)
-        //ctx.beginPath()
-        //ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-        //ctx.fillStyle = this.color
-        //ctx.fill()
+	    ctx.drawImage(batman, this.x - size / 2, this.y - size / 2, size, size)
     }
 }
 
@@ -40,10 +44,15 @@ class Enemy {
 
     draw(){
 	    ctx.drawImage(mummy, this.x - size / 2, this.y - size / 2, size, size)
-        //ctx.beginPath()
-        //ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-        //ctx.fillStyle = this.color
-        //ctx.fill()
+    }
+
+    takeDamage(){
+        // this.x+=10
+        ctx.save()
+        ctx.translate(Math.floor(Math.random() * 10) + 1, Math.floor(Math.random() * 10) + 1)
+        ctx.drawImage(mummy, this.x - size / 2, this.y - size / 2, size, size)
+        ctx.translate(0, 10)
+        ctx.restore()
     }
 }
 
@@ -116,14 +125,15 @@ class Projectile {
     draw(){
         ctx.beginPath()
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+        // ctx.fillRect(this.x, this.y, 150, 10);
         ctx.fillStyle = this.color
         ctx.fill()
     }
 
     update(){
         this.draw()
-        this.x = this.x + this.velocity.x * 10
-        this.y = this.y + this.velocity.y * 10
+        this.x = this.x + this.velocity.x * 20
+        this.y = this.y + this.velocity.y * 20
     }
 }
 
@@ -140,8 +150,10 @@ const damages = []
 
 function animate(){
     requestAnimationFrame(animate)
-	ctx.fillStyle = 'rgba(0,0,0,0.5)'
-	ctx.fillRect(0, 0, canvas.width, canvas.height)
+	// ctx.fillStyle = 'rgba(0,0,0,0.5)'
+	// ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBackground()
     hero.draw()
 	enemy.draw()
     particles.forEach((particle, particleIndex) => {
@@ -164,8 +176,9 @@ function animate(){
         
         // When hit
 	    if (projectile.x > canvas.width - size){
+            enemy.takeDamage()
             for(let i = 0; i < 8; i++){
-                particles.push(new Particle(projectile.x, projectile.y, Math.random() * size/25, projectile.color, {x: Math.random() - 0.5, y: Math.random() - 0.5}))
+                particles.push(new Particle(projectile.x, projectile.y, Math.random() * size/45, projectile.color, {x: Math.random() - 0.5, y: Math.random() - 0.5}))
             }
 		    setTimeout(() => {
 			    projectiles.splice(projectileIndex, 1)
@@ -186,7 +199,7 @@ function handler(e){
     }
 	const velocity = {x: Math.cos(angle), y: Math.sin(angle)}
 	const color = `hsl(${Math.random() *360}, 50%, 50%)`
-	projectiles.push(new Projectile(hero.x, hero.y, size/17, color, velocity))
+	projectiles.push(new Projectile(hero.x, hero.y, size/30, color, velocity))
 }
 
 animate()
