@@ -298,7 +298,7 @@ function animate(){
             // damageSound.play()
             playSound(mySound)
             enemy.takeDamage()
-            for(let i = 0; i < 8; i++){
+            for(let i = 0; i < 20; i++){
                 particles.push(new Particle(projectile.x, projectile.y, Math.random() * size/45, projectile.color, {x: Math.random() - 0.5, y: Math.random() - 0.5}))
             }
 		    setTimeout(() => {
