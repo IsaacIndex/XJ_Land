@@ -263,8 +263,8 @@ function playSound(sound) {
    var mySound = loadSound("assets/damage.m4a")// Then later after audio is unlocked and the sound is loaded:
    playSound(mySound)
    // How to unlock all sounds:
-   var emptySound = loadSound("assets/shoot.ogg")
-   document.body.addEventListener('click', function(){playSound(emptySound)}, false)
+   var emptySound = loadSound("assets/shoot.m4a")
+   document.body.addEventListener('touchstart', function(){playSound(emptySound)}, false)
 
 
 function animate(){
