@@ -3,7 +3,7 @@ const ctx = canvas.getContext("2d")
 const con = document.getElementById("console")
 
 var background = new Image();
-background.src = "medias/temple.jpg"
+background.src = "assets/temple.jpg"
 function drawBackground(){
     ctx.drawImage(background,0,0, canvas.width, canvas.height);  
 }
@@ -11,13 +11,13 @@ background.onload = function(){
     drawBackground() 
 }
 const batman = new Image()
-batman.src = "medias/batman.png"
+batman.src = "assets/batman.png"
 const mummy = new Image()
-mummy.src = "medias/mummy.png"
+mummy.src = "assets/mummy.png"
 damageImages = []
 for (let i=0; i<10; i++){
     damageImages[i] = new Image()
-    damageImages[i].src = "medias/damages/"+i+".PNG"
+    damageImages[i].src = "assets/damages/"+i+".PNG"
 }
 
 canvas.width = innerWidth;
@@ -48,6 +48,7 @@ class Enemy {
 
     takeDamage(){
         // this.x+=10
+        // damageSound.play()
         ctx.save()
         ctx.translate(Math.floor(Math.random() * 10) + 1, Math.floor(Math.random() * 10) + 1)
         ctx.drawImage(mummy, this.x - size / 2, this.y - size / 2, size, size)
@@ -147,21 +148,124 @@ const projectiles = []
 const particles = []
 const damages = []
 
-function sound(src) {
-    this.sound = document.createElement("audio");
-    this.sound.src = src;
-    this.sound.setAttribute("preload", "auto");
-    this.sound.setAttribute("controls", "none");
-    this.sound.style.display = "none";
-    document.body.appendChild(this.sound);
-    this.play = function(){
-        this.sound.play();
+// function sound(src) {
+//     const AudioContext = window.AudioContext || window.webkitAudioContext;
+//     const audioCtx = new AudioContext();
+//     this.sound = document.createElement("audio");
+//     this.sound.src = src;
+//     this.sound.autoplay = true;
+//     this.sound.setAttribute("preload", "auto");
+//     this.sound.setAttribute("controls", "none");
+//     this.sound.style.display = "none";
+//     document.body.appendChild(this.sound);
+//     this.play = function(){
+//         this.sound.play();
+//     }
+//     this.stop = function(){
+//         this.sound.pause();
+//     }    
+// }
+// damageSound = new sound("assets/damage.mp3")
+
+// Web Audio API
+// var audioCtx, analyser, bufferLength, dataArray;
+// window.addEventListener('load', initAudio, false);
+// function initAudio() {
+    //     try {
+//     window.audioCtx = window.AudioContext|| window.webkitAudioContext;
+//     audioCtx = new AudioContext();
+//     analyser = audioCtx.createAnalyser();
+//     }
+//     catch(e) {
+//     alert('Web Audio API is not supported in this browser');
+//     }
+//     // load the audio file
+//     source = audioCtx.createBufferSource();
+//     request = new XMLHttpRequest();
+//     request.open('GET', 'assets/damage.mp3', true);
+//     request.responseType = 'arraybuffer';
+//     request.onload = function() {
+//         var audioData = request.response;
+//         audioCtx.decodeAudioData(audioData, function(buffer) {
+//         source.buffer = buffer;
+//         source.connect(analyser);
+//         analyser.connect(audioCtx.destination);
+//         source.loop = false;
+//         source.start(0);
+//         },function(e){"Error with decoding audio data" + e.err});
+//     }
+//     request.send(); 
+// }
+
+var audioContext = new (window.AudioContext || window.webkitAudioContext)()
+function loadSound(filename) {
+    var sound = {volume: 1, audioBuffer: null}
+    
+    var ajax = new XMLHttpRequest()
+    ajax.open("GET", filename, true)
+    ajax.responseType = "arraybuffer"
+    ajax.onload = function()
+    {
+     audioContext.decodeAudioData
+     (
+      ajax.response,
+      function(buffer) {
+       sound.audioBuffer = buffer
+      },
+      function(error) {
+       debugger
+      }
+     )
     }
-    this.stop = function(){
-        this.sound.pause();
-    }    
+    
+    ajax.onerror = function() {
+     debugger
+    }
+    
+    ajax.send()
+    
+    return sound
 }
-damageSound = new sound("medias/damage.mp3")
+function playSound(sound) {
+    if(!sound.audioBuffer)
+     return false
+    
+    var source = audioContext.createBufferSource()
+    if(!source)
+     return false
+    
+    source.buffer = sound.audioBuffer
+    if(!source.start)
+     source.start = source.noteOn
+    
+    if(!source.start)
+     return false 
+    var gainNode = audioContext.createGain()
+    gainNode.gain.value = sound.volume
+    source.connect(gainNode)
+    gainNode.connect(audioContext.destination)
+    
+    source.start(0)
+    
+    sound.gainNode = gainNode
+    return true
+}
+   function stopSound(sound) {
+    if(sound.gainNode)
+     sound.gainNode.gain.value = 0
+   }
+   function setSoundVolume(sound, volume) {
+    sound.volume = volume
+    
+    if(sound.gainNode)
+     sound.gainNode.gain.value = volume
+   }
+   var mySound = loadSound("assets/damage.m4a")// Then later after audio is unlocked and the sound is loaded:
+   playSound(mySound)
+   // How to unlock all sounds:
+   var emptySound = loadSound("assets/shoot.ogg")
+   document.body.addEventListener('click', function(){playSound(emptySound)}, false)
+
 
 function animate(){
     requestAnimationFrame(animate)
@@ -191,7 +295,8 @@ function animate(){
         
         // When hit
 	    if (projectile.x > canvas.width - size && projectile.y > canvas.height - size){
-            damageSound.play()
+            // damageSound.play()
+            playSound(mySound)
             enemy.takeDamage()
             for(let i = 0; i < 8; i++){
                 particles.push(new Particle(projectile.x, projectile.y, Math.random() * size/45, projectile.color, {x: Math.random() - 0.5, y: Math.random() - 0.5}))
