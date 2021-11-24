@@ -264,7 +264,9 @@ function playSound(sound) {
    playSound(mySound)
    // How to unlock all sounds:
    var emptySound = loadSound("assets/shoot.m4a")
-   document.body.addEventListener('touchstart', function(){playSound(emptySound)}, false)
+   setSoundVolume(emptySound, 0.1)
+   setSoundVolume(mySound, 0.1)
+   document.body.addEventListener('click', function(){playSound(emptySound)}, false)
 
 
 function animate(){
