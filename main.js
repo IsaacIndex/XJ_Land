@@ -11,7 +11,7 @@ background.onload = function(){
     drawBackground() 
 }
 const batman = new Image()
-batman.src = "assets/batman.png"
+batman.src = "assets/xiaojun.png"
 const mummy = new Image()
 mummy.src = "assets/mummy_new.png"
 damageImages = []
