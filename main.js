@@ -32,7 +32,7 @@ class Hero {
     }
 
     draw(){
-	    ctx.drawImage(batman, this.x - size / 2*1.8, this.y - size / 2*1.8, size*1.8, size*1.8)
+	    ctx.drawImage(batman, this.x - size / 2*1.8, this.y - size / 2*1, size*1.8, size*1.8)
     }
 }
 
